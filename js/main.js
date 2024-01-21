@@ -25,11 +25,17 @@ function GameBasics(canvas){
         right: 800
     };
 
+    this.level = 1;
+    this.score = 0;
+    this.shields = 2;
+
     this.settings = {
         updateSeconds: (1/60),
     }
 
     this.positionContainer = [];
+
+    this.pressedKeys = {};
 }
 
 GameBasics.prototype.presentPosition = function(){
@@ -59,8 +65,17 @@ GameBasics.prototype.start = function (){
     this.goToPosition(new OpeningPosition());
 }
 
-const play = new GameBasics(canvas);
-play.start();
+
+GameBasics.prototype.keyDown = function(keyboardCode){
+    this.pressedKeys[keyboardCode] = true;
+    if(this.presentPosition() && this.presentPosition().keyDown){
+        this.presentPosition().keyDown(this, keyboardCode);
+    }
+}
+
+GameBasics.prototype.keyUp = function(keyboardCode){
+    delete this.pressedKeys[keyboardCode];
+}
 
 function gameLoop(play){
     let presentPosition = play.presentPosition();
@@ -74,4 +89,19 @@ function gameLoop(play){
         }
     }
 }
+
+window.addEventListener("keydown", function (e){
+    const keyboardCode = e.which || event.keyCode;
+    if(keyboardCode === 37 || keyboardCode === 39 || keyboardCode === 32){
+        e.preventDefault();
+    }
+    play.keyDown(keyboardCode);
+});
+window.addEventListener("keyup", function (e){
+    const keyboardCode = e.which || event.keyCode;
+    play.keyUp(keyboardCode);
+});
+
+const play = new GameBasics(canvas);
+play.start();
 
