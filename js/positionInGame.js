@@ -3,7 +3,8 @@ function InGamePosition(setting, level){
     this.level = level;
     this.object = null;
     this.spaceship = null;
-    this.bullet = [];
+    this.bullets = [];
+    this.lastBulletTime = null;
 }
 
 InGamePosition.prototype.update = function (play) {
@@ -11,6 +12,7 @@ InGamePosition.prototype.update = function (play) {
     const spaceship = this.spaceship;
     const spaceshipSpeed = this.spaceshipSpeed;
     const upSec = this.setting.updateSeconds;
+    const bullets = this.bullets;
 
     if(play.pressedKeys[37]){
      spaceship.x -= spaceshipSpeed * upSec;
@@ -29,11 +31,22 @@ InGamePosition.prototype.update = function (play) {
     if(this.spaceship.x > play.playBoundaries.right){
         spaceship.x = play.playBoundaries.right;
     }
+
+    for(let i = 0; i < bullets.length; i++){
+        let bullet = bullets[i];
+        bullet.y -= upSec * this.setting.bulletSpeed;
+        if(bullet.y < 0){
+            bullets.splice(i--, 1);
+        }
+    }
 }
 
 InGamePosition.prototype.shoot = function () {
-    this.object = new Objects();
-    this.bullet.push(this.object.bullet(this.spaceship.x, this.spaceship.y - this.spaceship.height/2, this.setting.bulletSpeed));
+    if(this.lastBulletTime === null || ((new Date()).getTime()- this.lastBulletTime) > (this.setting.bulletMaxFrequency)){
+        this.object = new Objects();
+        this.bullets.push(this.object.bullet(this.spaceship.x, this.spaceship.y -this.spaceship.height / 2, this.setting.bulletSpeed));
+        this.lastBulletTime = (new Date()).getTime();
+    }
 }
 
 InGamePosition.prototype.entry = function (play) {
@@ -53,8 +66,8 @@ InGamePosition.prototype.draw = function (play) {
     ctx.drawImage(this.spaceship_img, this.spaceship.x - (this.spaceship.width/2), this.spaceship.y - (this.spaceship.height/2));
 
     ctx.fillStyle = '#ff0000';
-    for (let i = 0; i < this.bullet.length; i++) {
-        const bullet = this.bullet[i];
+    for (let i = 0; i < this.bullets .length; i++) {
+        const bullet = this.bullets[i];
         ctx.fillRect(bullet.x-1, bullet.y-6, 2, 6);
     }
 
