@@ -31,6 +31,7 @@ function GameBasics(canvas){
 
     this.settings = {
         updateSeconds: (1/60),
+        spaceshipSpeed: 200,
     }
 
     this.positionContainer = [];
