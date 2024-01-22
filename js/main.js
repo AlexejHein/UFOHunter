@@ -32,6 +32,8 @@ function GameBasics(canvas){
     this.settings = {
         updateSeconds: (1/60),
         spaceshipSpeed: 200,
+        bulletSpeed: 130,
+        bulletMaxFrequency: 500,
     }
 
     this.positionContainer = [];
