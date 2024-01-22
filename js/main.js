@@ -34,6 +34,10 @@ function GameBasics(canvas){
         spaceshipSpeed: 200,
         bulletSpeed: 130,
         bulletMaxFrequency: 500,
+
+        ufoLines: 4,
+        ufoColumns: 8,
+        ufoSpeed: 35,
     }
 
     this.positionContainer = [];

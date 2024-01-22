@@ -5,6 +5,7 @@ function InGamePosition(setting, level){
     this.spaceship = null;
     this.bullets = [];
     this.lastBulletTime = null;
+    this.ufos = [];
 }
 
 InGamePosition.prototype.update = function (play) {
@@ -53,8 +54,32 @@ InGamePosition.prototype.entry = function (play) {
     this.upSec = this.setting.updateSeconds;
     this.spaceshipSpeed = this.setting.spaceshipSpeed;
     this.spaceship_img = new Image();
+    this.ufo_img = new Image();
     this.object = new Objects();
     this.spaceship = this.object.spaceship((play.width/2), play.playBoundaries.bottom, this.spaceship_img);
+
+    const lines = this.setting.ufoLines;
+    const columns = this.setting.ufoColumns;
+    const ufosInitial = [];
+
+    let line, column;
+
+    for(line = 0; line < lines; line++){
+        for(column = 0; column < columns; column++) {
+            this.object = new Objects();
+            let x, y;
+            x = (play.width / 2) + (column * 50) - ((columns -1) * 25);
+            y = (play.playBoundaries.top + 30) +(line * 30);
+            ufosInitial.push(this.object.ufo(
+                x,
+                y,
+                line,
+                column,
+                this.ufo_img
+            ));
+        }
+    }
+    this.ufos = ufosInitial;
 }
 
 InGamePosition.prototype.keyDown = function (play, keyboardCode) {
@@ -69,6 +94,11 @@ InGamePosition.prototype.draw = function (play) {
     for (let i = 0; i < this.bullets .length; i++) {
         const bullet = this.bullets[i];
         ctx.fillRect(bullet.x-1, bullet.y-6, 2, 6);
+    }
+
+    for(let i = 0; i < this.ufos.length; i++){
+        const ufo = this.ufos[i];
+        ctx.drawImage(ufo.ufo_img, ufo.x - (ufo.width/2), ufo.y - (ufo.height/2));
     }
 
 }
