@@ -70,6 +70,13 @@ InGamePosition.prototype.update = function (play) {
                 this.ufoPresentSinkingValue = 0;
             }
         }
+        const frontLineUFOs = [];
+        for(let i = 0; i < this.ufos.length; i++){
+            let ufo = this.ufos[i];
+            if(!frontLineUFOs[ufo.column] || frontLineUFOs[ufo.column].line < ufo.line){
+                frontLineUFOs[ufo.column] = ufo;
+            }
+        }
     }
 }
 
@@ -119,6 +126,7 @@ InGamePosition.prototype.entry = function (play) {
         }
     }
     this.ufos = ufosInitial;
+
 }
 
 InGamePosition.prototype.keyDown = function (play, keyboardCode) {
