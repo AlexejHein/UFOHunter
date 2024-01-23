@@ -41,24 +41,34 @@ InGamePosition.prototype.update = function (play) {
         }
     }
 
-    let reachedRight = false;
-    let reachedLeft = false;
+    let reachedSide = false;
 
     for(let i = 0; i < this.ufos.length; i++){
         let ufo = this.ufos[i];
-        let fresh_x = ufo.x + this.ufoSpeed * upSec * this.turnAround;
+        let fresh_x = ufo.x + this.ufoSpeed * upSec * this.turnAround * this.horizontalMoving;
+        let fresh_y = ufo.y + this.ufoSpeed * upSec * this.verticalMoving;
 
-        if(fresh_x > play.playBoundaries.right){
+        if(fresh_x > play.playBoundaries.right || fresh_x < play.playBoundaries.left){
             this.turnAround *= -1;
-            reachedRight = true;
-        }
-        if(fresh_x < play.playBoundaries.left){
-            this.turnAround *= -1;
-            reachedLeft = true;
+            reachedSide = true;
+            this.horizontalMoving = 0;
+            this.verticalMoving = 1;
+            this.ufoAreSinking = true;
         }
 
-        if (!reachedRight === true && !reachedLeft === true){
+        if (reachedSide !== true){
             ufo.x = fresh_x;
+            ufo.y = fresh_y;
+        }
+
+        if(this.ufoAreSinking === true){
+            this.ufoPresentSinkingValue += this.ufoSpeed * upSec;
+            if(this.ufoPresentSinkingValue >= this.setting.ufoSinkingValue){
+                this.ufoAreSinking = false;
+                this.verticalMoving = 0;
+                this.horizontalMoving = 1;
+                this.ufoPresentSinkingValue = 0;
+            }
         }
     }
 }
@@ -72,6 +82,10 @@ InGamePosition.prototype.shoot = function () {
 }
 
 InGamePosition.prototype.entry = function (play) {
+    this.horizontalMoving = 1;
+    this.verticalMoving = 0;
+    this.ufoAreSinking = false;
+    this.ufoPresentSinkingValue = 0;
     this.turnAround = 1;
     this.upSec = this.setting.updateSeconds;
     this.spaceshipSpeed = this.setting.spaceshipSpeed;
