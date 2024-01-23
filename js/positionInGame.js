@@ -111,6 +111,27 @@ InGamePosition.prototype.update = function (play) {
                 this.ufos.splice(i--, 1);
             }
         }
+
+        for(let i = 0; i < this.bombs.length; i++){
+            let bomb = this.bombs[i];
+            if(bomb.x + 2 >= (spaceship.x - spaceship.width / 2) &&
+                bomb.x - 2 <= (spaceship.x + spaceship.width / 2) &&
+                bomb.y + 6 >= (spaceship.y - spaceship.height / 2) &&
+                bomb.y <= (spaceship.y + spaceship.height / 2)){
+                this.bombs.splice(i--, 1);
+                play.goToPosition(new OpeningPosition());
+            }
+        }
+
+        for(let i = 0; i < this.ufos.length; i++){
+            let ufo = this.ufos[i];
+            if((ufo.x + ufo.width / 2) > (spaceship.x - spaceship.width / 2) &&
+                (ufo.x - ufo.width / 2) < (spaceship.x + spaceship.width / 2) &&
+                (ufo.x + ufo.height / 2) > (spaceship.y - spaceship.height / 2) &&
+                (ufo.x - ufo.height / 2) > (spaceship.y + spaceship.height / 2)){
+                play.goToPosition(new OpeningPosition());
+            }
+        }
     }
 }
 
