@@ -40,9 +40,9 @@ function GameBasics(canvas){
         ufoSpeed: 35,
         ufoSinkingValue: 300,
 
-        bombSpeed: 0.00075,
+        bombSpeed: 3.75,
         bombFrequency: 0.00005,
-    }
+     }
 
     this.positionContainer = [];
 

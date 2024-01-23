@@ -95,6 +95,22 @@ InGamePosition.prototype.update = function (play) {
                 this.bombs.splice(i--, 1);
             }
         }
+
+        for(let i = 0; i < this.ufos.length; i++){
+            let ufo = this.ufos[i];
+            let collision = false;
+            for (let j = 0; j < bullets.length; j++){
+                let bullet = bullets[j];
+                if(bullet.x >= (ufo.x - ufo.width / 2) && bullet.x <= (ufo.x + ufo.width / 2) &&
+                    bullet.y >= (ufo.y - ufo.height / 2) && bullet.y <= (ufo.y + ufo.height / 2)){
+                    bullets.splice(j--, 1);
+                    collision = true;
+                }
+            }
+            if(collision === true){
+                this.ufos.splice(i--, 1);
+            }
+        }
     }
 }
 
@@ -122,8 +138,8 @@ InGamePosition.prototype.entry = function (play) {
     let presentLevel = this.level;
     this.ufoSpeed = this.setting.ufoSpeed + (presentLevel * 7);
 
-    this.bombSpeed = this.setting.bombSpeed + (presentLevel * 10);
-    this.bombFrequency = this.setting.bombFrequency + (presentLevel * 0.05);
+    this.bombSpeed = this.setting.bombSpeed + (presentLevel * 0.00001);
+    this.bombFrequency = this.setting.bombFrequency + (presentLevel * 0.005);
 
     const lines = this.setting.ufoLines;
     const columns = this.setting.ufoColumns;
