@@ -31,3 +31,9 @@ Objects.prototype.ufo = function (x, y, line, column, ufo_img){
     this.ufo_img.src = "img/ufo.png";
     return this;
 };
+
+Objects.prototype.bomb = function (x, y){
+    this.x = x;
+    this.y = y;
+    return this;
+}

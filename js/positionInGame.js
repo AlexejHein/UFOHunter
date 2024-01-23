@@ -6,6 +6,7 @@ function InGamePosition(setting, level){
     this.bullets = [];
     this.lastBulletTime = null;
     this.ufos = [];
+    this.bombs = [];
 }
 
 InGamePosition.prototype.update = function (play) {
@@ -77,6 +78,23 @@ InGamePosition.prototype.update = function (play) {
                 frontLineUFOs[ufo.column] = ufo;
             }
         }
+        for(let i = 0; i < this.setting.ufoColumns; i++){
+            let ufo = frontLineUFOs[i];
+            if(!ufo) continue;
+            let chance = this.bombFrequency * upSec;
+            this.object = new Objects();
+            if(chance > Math.random()){
+                this.bombs.push(this.object.bomb(ufo.x, ufo.y + ufo.height / 2));
+            }
+        }
+
+        for(let i = 0; i < this.bombs.length; i++){
+            let bomb = this.bombs[i];
+            bomb.y += upSec * this.bombSpeed;
+            if(bomb.y > this.height){
+                this.bombs.splice(i--, 1);
+            }
+        }
     }
 }
 
@@ -103,6 +121,9 @@ InGamePosition.prototype.entry = function (play) {
 
     let presentLevel = this.level;
     this.ufoSpeed = this.setting.ufoSpeed + (presentLevel * 7);
+
+    this.bombSpeed = this.setting.bombSpeed + (presentLevel * 10);
+    this.bombFrequency = this.setting.bombFrequency + (presentLevel * 0.05);
 
     const lines = this.setting.ufoLines;
     const columns = this.setting.ufoColumns;
@@ -146,6 +167,12 @@ InGamePosition.prototype.draw = function (play) {
     for(let i = 0; i < this.ufos.length; i++){
         const ufo = this.ufos[i];
         ctx.drawImage(ufo.ufo_img, ufo.x - (ufo.width/2), ufo.y - (ufo.height/2));
+    }
+
+    ctx.fillStyle = '#FE2EF7';
+    for(let i = 0; i < this.bombs.length; i++){
+        const bomb = this.bombs[i];
+        ctx.fillRect(bomb.x, bomb.y, 4, 10);
     }
 
 }

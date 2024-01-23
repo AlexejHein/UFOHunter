@@ -39,6 +39,9 @@ function GameBasics(canvas){
         ufoColumns: 8,
         ufoSpeed: 35,
         ufoSinkingValue: 300,
+
+        bombSpeed: 0.00075,
+        bombFrequency: 0.00005,
     }
 
     this.positionContainer = [];
